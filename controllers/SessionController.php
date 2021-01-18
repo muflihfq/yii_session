@@ -38,8 +38,13 @@ class SessionController extends Controller
             return $this->response('Method not allowed',405);
         }
 
-        $sessions = Session::find()->all();
+        // $sessions = Session::find()->all();
 
+        $sessions =  (new \yii\db\Query())
+                ->select(['id', 'name'])
+                ->from('session')
+                ->all();
+                
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
         $response->data = $sessions;

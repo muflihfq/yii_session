@@ -45,11 +45,8 @@ class SessionController extends Controller
                 ->from('session')
                 ->all();
                 
-        $response = Yii::$app->response;
-        $response->format = \yii\web\Response::FORMAT_JSON;
-        $response->data = $sessions;
-
-        return $response;
+        return $this->returnSession($sessions);
+        
     }
 
     public function actionDetail($id){
@@ -59,14 +56,15 @@ class SessionController extends Controller
         if(!$request->isGet){
             return $this->response('Method not allowed',405);
         }
-
+        
         $session = Session::findOne($id);
 
-        $response = Yii::$app->response;
-        $response->format = \yii\web\Response::FORMAT_JSON;
-        $response->data = $session;
+        if(!$session){
+            return $this->response('Not found',404);
+        }
 
-        return $response;
+
+        return $this->returnSession($session);
     }
 
     public function actionCreate(){
@@ -163,7 +161,7 @@ class SessionController extends Controller
         return $response;
     }
 
-    private function returnSession(Session $session)
+    private function returnSession($session)
     {
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
